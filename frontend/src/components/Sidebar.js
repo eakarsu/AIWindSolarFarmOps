@@ -13,8 +13,10 @@ const ASSETS_LINKS = [
 
 const OPERATIONS_LINKS = [
   { to: '/work-orders',        label: 'Work Orders' },
+  { to: '/work-order-fsm',     label: 'Work Order State Machine' },
   { to: '/maintenance-logs',   label: 'Maintenance Logs' },
   { to: '/sensor-streams',     label: 'Sensor Streams' },
+  { to: '/scada-events',       label: 'SCADA Events' },
   { to: '/energy-meters',      label: 'Energy Meters' },
   { to: '/weather-forecasts',  label: 'Weather Forecasts' },
 ];
@@ -27,6 +29,7 @@ const FAULTS_LINKS = [
 
 const CONTRACTS_LINKS = [
   { to: '/ppa-contracts',     label: 'PPA Contracts' },
+  { to: '/iso-bids',          label: 'ISO / RTO Bids' },
   { to: '/technicians',       label: 'Technicians' },
   { to: '/spare-parts',       label: 'Spare Parts' },
 ];
@@ -39,15 +42,19 @@ const GOVERNANCE_LINKS = [
 // ── AI groups ──────────────────────────────────────────────
 const AI_FORECASTING = [
   { to: '/ai/forecast-generation',    label: 'AI · Forecast Generation' },
+  { to: '/ai/intraday-forecast',      label: 'AI · Intraday Forecast' },
   { to: '/ai/weather-window',         label: 'AI · Weather Window' },
   { to: '/ai/curtailment-optimize',   label: 'AI · Curtailment Optimize' },
   { to: '/ai/ramp-rate-strategy',     label: 'AI · Ramp-Rate Strategy' },
+  { to: '/ai/hybrid-storage-co-opt',  label: 'AI · Hybrid Storage Co-Opt' },
 ];
 
 const AI_MAINTENANCE = [
   { to: '/ai/fault-prognostic',         label: 'AI · Fault Prognostic' },
   { to: '/ai/schedule-maintenance',     label: 'AI · Schedule Maintenance' },
+  { to: '/ai/ticket-prioritizer',       label: 'AI · Ticket Prioritizer' },
   { to: '/ai/blade-inspection-summary', label: 'AI · Blade Inspection' },
+  { to: '/ai/drone-blade-inspection',   label: 'AI · Drone Blade Pipeline' },
   { to: '/ai/draft-work-order',         label: 'AI · Draft Work Order' },
   { to: '/ai/root-cause-analyzer',      label: 'AI · Root Cause Analyzer' },
 ];
@@ -56,8 +63,10 @@ const AI_PERFORMANCE = [
   { to: '/ai/fleet-health',              label: 'AI · Fleet Health' },
   { to: '/ai/turbine-availability',      label: 'AI · Turbine Availability' },
   { to: '/ai/inverter-clipping-detect',  label: 'AI · Inverter Clipping' },
+  { to: '/ai/soiling-icing-detect',      label: 'AI · Soiling / Icing' },
   { to: '/ai/asset-deg-trend',           label: 'AI · Asset Deg Trend' },
   { to: '/ai/ppa-settlement',            label: 'AI · PPA Settlement' },
+  { to: '/ai/ppa-shortfall-narrator',    label: 'AI · PPA Shortfall' },
   { to: '/ai/vendor-warranty-claim',     label: 'AI · Vendor Warranty Claim' },
   { to: '/ai/executive-brief',           label: 'AI · Executive Brief' },
 ];

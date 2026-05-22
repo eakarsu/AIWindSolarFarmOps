@@ -212,6 +212,88 @@ const SAMPLES = {
     { label: 'Worker fall from turbine — near miss',
       values: { incident: 'Near-miss: technician fall arrested by harness in WTG-TX-027 nacelle', notes: 'Anchor point not properly inspected; PPE inspection log gap of 90 days.' } },
   ],
+
+  // ──────────────────────────────────────────────────────────────
+  // Pass 7 — full backlog AI samples (6)
+  // ──────────────────────────────────────────────────────────────
+
+  'intraday-forecast': [
+    { label: 'Roscoe TX — next 6h, frontal passage',
+      values: { site: 'Roscoe Wind Farm, TX', horizon_hours: 6, notes: 'Cold front crossing at T+90min; wind backing 220→290, gust factor 1.4.' } },
+    { label: 'Topaz CA — solar nowcast 4h, scattered cu',
+      values: { site: 'Topaz Solar Farm, CA', horizon_hours: 4, notes: 'Scattered cumulus building; nowcast shows 30% cloud at T+45.' } },
+    { label: 'Storm Lake IA — 12h with squall line',
+      values: { site: 'Storm Lake II, IA', horizon_hours: 12, notes: 'MRMS shows squall line T+3 to T+5h, gusts 24 m/s, possible cut-out events.' } },
+    { label: 'Agua Caliente AZ — monsoon afternoon 6h',
+      values: { site: 'Agua Caliente Solar, AZ', horizon_hours: 6, notes: 'Convection initiating T+2h; satellite shows rapid cu growth, irradiance drop ramp expected.' } },
+    { label: 'Hornsea Two UK — 8h offshore wind',
+      values: { site: 'Hornsea Project Two, UK', horizon_hours: 8, notes: 'Frontal trough T+5h; wind veer 230→290, sustained drop from 18 to 11 m/s.' } },
+  ],
+
+  'ticket-prioritizer': [
+    { label: 'Default — rank all open work orders',
+      values: { context: 'Use safety > revenue loss > warranty expiry > parts lead time.' } },
+    { label: 'High-LMP week — bias toward revenue loss',
+      values: { context: 'ERCOT LMP forecast > $120/MWh next 5 days; prioritize tickets blocking generation.' } },
+    { label: 'Storm prep — bias toward safety',
+      values: { context: 'Hurricane landfall T+72h; prioritize safety + securing tickets, defer revenue-only.' } },
+    { label: 'OEM warranty closing in 30d',
+      values: { context: 'Several Vestas pitch-system warranties expire in 30 days; prioritize those claims.' } },
+    { label: 'Crew capacity limit — 3 crews avail',
+      values: { context: 'Only 3 crews available all week; rank to maximize throughput at fixed capacity.' } },
+  ],
+
+  'ppa-shortfall-narrator': [
+    { label: 'Topaz May — soiling-driven shortfall',
+      values: { ppa_id: 'PPA-2024-008', period: '2025-05', notes: 'Delivered 36,900 vs floor 38,000; soiling ramped after dust event; 2 inverter trips.' } },
+    { label: 'Storm Lake Q1 — icing curtailment',
+      values: { ppa_id: 'PPA-2025-001', period: '2025-Q1', notes: 'Delivered 142k vs committed 168k; 8 days of icing curtailment for grid safety.' } },
+    { label: 'Hornsea Two CfD — gale cut-out',
+      values: { ppa_id: 'PPA-CFD-2024-002', period: '2025-02', notes: 'Force-9 gale 12-15 Feb pushed turbines to cut-out; lost 45 GWh.' } },
+    { label: 'Roscoe — transmission constraint',
+      values: { ppa_id: 'PPA-2025-021', period: '2025-04', notes: 'MISO constraint on Hazleton-Salem cost 8.4 GWh delivery shortfall.' } },
+    { label: 'Cádiz Q2 — voltage support request',
+      values: { ppa_id: 'PPA-2025-031', period: '2025-Q2', notes: 'REE voltage support requested 60% derate for 12 days; counterparty owed explanation.' } },
+  ],
+
+  'soiling-icing-detect': [
+    { label: 'Topaz — solar soiling after dust event',
+      values: { site: 'Topaz Solar Farm, CA', notes: 'Post dust storm; Block 4 inverters reading 6% below adjacent blocks for 3 consecutive sunny days.' } },
+    { label: 'Storm Lake — turbine icing in freezing rain',
+      values: { site: 'Storm Lake II, IA', notes: 'Sub-zero with freezing rain 36h; multiple turbines reporting low-power-fault P2034 at low wind speeds.' } },
+    { label: 'Cádiz — agricultural dust ongoing',
+      values: { site: 'Cádiz Solar Plant, ES', notes: 'Harvest season; 1.2%/week soiling rate vs baseline 0.4%; soiling-station ratio confirms.' } },
+    { label: 'Hornsea — offshore blade icing rare event',
+      values: { site: 'Hornsea Project Two, UK', notes: 'Unusual marine icing during polar low; 9 turbines tripped on imbalance fault simultaneously.' } },
+    { label: 'Bungala — bird droppings + dust hotspot',
+      values: { site: 'Bungala Solar, SA', notes: 'String-level analysis shows 4 strings -12% vs neighbors; localized soiling suspected.' } },
+  ],
+
+  'hybrid-storage-co-opt': [
+    { label: 'Texas solar+BESS 100MW/200MWh — ERCOT',
+      values: { site: 'Roscoe Hybrid Site, TX', notes: 'ERCOT real-time + DAM; 100 MW solar, 100 MW / 200 MWh BESS; LMP P50 $35/MWh, P95 $400.' } },
+    { label: 'California PV+battery — duck curve',
+      values: { site: 'Topaz Hybrid, CA', notes: 'Charge 10:00-14:00 off solar surplus; discharge 18:00-21:00 net peak; PPA $42 fixed for solar.' } },
+    { label: 'NYISO wind+BESS — capacity + arbitrage',
+      values: { site: 'Maple Ridge Hybrid, NY', notes: '200 MW wind + 50 MW / 100 MWh BESS; participate in ICAP + energy arbitrage; ancillary $.' } },
+    { label: 'Australia AEMO FCAS + arbitrage',
+      values: { site: 'Bungala Hybrid, SA', notes: 'AEMO 5-min FCAS raise/lower + energy; high midday curtailment opportunity for charge.' } },
+    { label: 'UK wind+BESS — Balancing Mechanism',
+      values: { site: 'Hornsea Hybrid, UK', notes: 'Cycle BESS in BM bid/offer; co-opt with wind generation forecast; CfD strike £92.50.' } },
+  ],
+
+  'drone-blade-inspection': [
+    { label: 'Vestas V112 — 36 images, post-storm',
+      values: { turbine_id: 'WTG-TX-027', image_count: 36, notes: '12 images per blade, drone altitude 60-120m AGL, post-storm survey.' } },
+    { label: 'GE 1.5MW — annual full inspection',
+      values: { turbine_id: 'WTG-IA-014', image_count: 48, notes: '16 images per blade, GPS-tagged, 4K resolution, scheduled annual.' } },
+    { label: 'Siemens Gamesa offshore — UAV from CTV',
+      values: { turbine_id: 'WTG-OFF-009', image_count: 30, notes: '10 per blade, offshore UAV operation from CTV; lightning strike receptor 1 visible damage.' } },
+    { label: 'Nordex N117 — gel-coat survey close-range',
+      values: { turbine_id: 'WTG-IA-031', image_count: 60, notes: '20 per blade, close-range 5-10m at 60-75% radius.' } },
+    { label: 'Goldwind 3.0 — acceptance inspection',
+      values: { turbine_id: 'WTG-AU-005', image_count: 24, notes: '8 per blade, 6-month newly commissioned acceptance.' } },
+  ],
 };
 
 // GET /api/ai/samples?feature=<verb>
@@ -469,6 +551,82 @@ router.post('/root-cause-analyzer', async (req, res) => {
     if (!incident) return res.status(400).json({ error: 'incident is required' });
     const result = await ai.rootCauseAnalyzer(incident, { notes: notes || '' });
     await record('root-cause-analyzer', { incident, notes }, result);
+    res.json(result);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ──────────────────────────────────────────────────────────────
+// Pass 7 — full backlog AI endpoints (6 verbs)
+// ──────────────────────────────────────────────────────────────
+
+router.post('/intraday-forecast', async (req, res) => {
+  try {
+    const { site = 'Default Site', horizon_hours, notes } = req.body || {};
+    const horizon = { horizon_hours: horizon_hours || 6, resolution_minutes: 15, notes: notes || '' };
+    const result = await ai.intradayForecast(site, horizon);
+    await record('intraday-forecast', { site, horizon }, result);
+    res.json(result);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+router.post('/ticket-prioritizer', async (req, res) => {
+  try {
+    const { context } = req.body || {};
+    let workOrders = [];
+    try {
+      const r = await pool.query(
+        "SELECT * FROM work_orders WHERE status IN ('open','in_progress','scheduled','blocked') ORDER BY id ASC LIMIT 50"
+      );
+      workOrders = r.rows;
+    } catch (_) {}
+    const result = await ai.ticketPrioritizer(workOrders, { context: context || '' });
+    await record('ticket-prioritizer', { context, count: workOrders.length }, result);
+    res.json(result);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+router.post('/ppa-shortfall-narrator', async (req, res) => {
+  try {
+    const { ppa_id, period, notes } = req.body || {};
+    if (!ppa_id) return res.status(400).json({ error: 'ppa_id is required' });
+    let ppa = { ppa_id };
+    try {
+      const r = await pool.query('SELECT * FROM ppa_contracts WHERE ppa_id = $1 LIMIT 1', [ppa_id]);
+      if (r.rows.length) ppa = r.rows[0];
+    } catch (_) {}
+    const result = await ai.ppaShortfallNarrator(ppa, { period: period || '', notes: notes || '' });
+    await record('ppa-shortfall-narrator', { ppa_id, period, notes }, result);
+    res.json(result);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+router.post('/soiling-icing-detect', async (req, res) => {
+  try {
+    const { site, notes } = req.body || {};
+    if (!site) return res.status(400).json({ error: 'site is required' });
+    const result = await ai.soilingIcingDetector(site, { notes: notes || '' });
+    await record('soiling-icing-detect', { site, notes }, result);
+    res.json(result);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+router.post('/hybrid-storage-co-opt', async (req, res) => {
+  try {
+    const { site, notes } = req.body || {};
+    if (!site) return res.status(400).json({ error: 'site is required' });
+    const result = await ai.hybridStorageCoOptimize(site, { notes: notes || '' });
+    await record('hybrid-storage-co-opt', { site, notes }, result);
+    res.json(result);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+router.post('/drone-blade-inspection', async (req, res) => {
+  try {
+    const { turbine_id, image_count, notes } = req.body || {};
+    if (!turbine_id) return res.status(400).json({ error: 'turbine_id is required' });
+    const refs = { image_count: image_count || 0, notes: notes || '' };
+    const result = await ai.droneBladeInspection(turbine_id, refs);
+    await record('drone-blade-inspection', { turbine_id, image_count, notes }, result);
     res.json(result);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });

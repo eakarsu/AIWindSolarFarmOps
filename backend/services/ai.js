@@ -397,6 +397,115 @@ async function rootCauseAnalyzer(incident, evidence = {}) {
   return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', contributing_factors: [] });
 }
 
+// ─────────────────────────────────────────────────────────────
+// Pass 7 — full backlog AI verbs (6)
+// ─────────────────────────────────────────────────────────────
+
+async function intradayForecast(site, horizon = {}) {
+  const sys = `${SYSTEM_PROMPT} Intraday (15-min resolution, 0-24h) production forecast — distinct from day-ahead in that it is short-horizon, nowcast-driven, and updated on ramp events. Return strict JSON:
+{
+  "site": string,
+  "issue_time_utc": string,
+  "horizon_hours": number,
+  "resolution_minutes": number,
+  "quarter_hour_forecast": [{ "t_minutes": number, "mw_expected": number, "lower_p10_mw": number, "upper_p90_mw": number, "driver": string }],
+  "nowcast_drivers": [string],
+  "ramp_events": [{ "t_minutes": number, "delta_mw_per_min": number, "cause": string }],
+  "deviation_vs_day_ahead_mwh": number,
+  "confidence_pct": number,
+  "summary": string
+}`;
+  const usr = `Site: ${site}\nHorizon / nowcast context:\n${JSON.stringify(horizon, null, 2)}`;
+  const r = await callOpenRouter(sys, usr);
+  return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', quarter_hour_forecast: [] });
+}
+
+async function ticketPrioritizer(workOrders = [], context = {}) {
+  const sys = `${SYSTEM_PROMPT} Score and rank open O&M tickets / work orders by risk-weighted priority. Inputs include the work-order list and fleet context. Return strict JSON:
+{
+  "ranked": [{ "wo_id": string, "asset_id": string, "priority_score": number, "factor_safety": number, "factor_revenue_loss_usd_per_day": number, "factor_warranty_expiry_days": number, "factor_lead_time_days": number, "recommended_priority": "low"|"normal"|"high"|"critical", "rationale": string }],
+  "top_5": [string],
+  "deferred_safely": [{ "wo_id": string, "reason": string }],
+  "method_notes": string,
+  "summary": string
+}`;
+  const usr = `Work orders:\n${JSON.stringify(workOrders, null, 2)}\n\nContext:\n${JSON.stringify(context, null, 2)}`;
+  const r = await callOpenRouter(sys, usr);
+  return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', ranked: [] });
+}
+
+async function ppaShortfallNarrator(ppa, shortfall = {}) {
+  const sys = `${SYSTEM_PROMPT} Narrate why a PPA period fell short of committed/floor volumes. Focus on attribution: weather, curtailment, forced outage, soiling/icing, grid-side. Return strict JSON:
+{
+  "ppa_id": string,
+  "period": string,
+  "committed_mwh": number,
+  "delivered_mwh": number,
+  "shortfall_mwh": number,
+  "shortfall_pct": number,
+  "attribution": [{ "category": "weather"|"curtailment"|"forced_outage"|"soiling"|"icing"|"grid"|"other", "mwh": number, "share_pct": number, "narrative": string }],
+  "counterparty_communication_draft": string,
+  "recovery_options": [{ "option": string, "mwh_recoverable": number, "cost_usd": number }],
+  "summary": string
+}`;
+  const usr = `PPA:\n${JSON.stringify(ppa, null, 2)}\n\nShortfall context:\n${JSON.stringify(shortfall, null, 2)}`;
+  const r = await callOpenRouter(sys, usr);
+  return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', attribution: [] });
+}
+
+async function soilingIcingDetector(site, observations = {}) {
+  const sys = `${SYSTEM_PROMPT} Text-only detector for solar soiling or wind/turbine icing from production deviation + weather narrative. No image processing. Return strict JSON:
+{
+  "site": string,
+  "domain": "solar"|"wind"|"mixed",
+  "soiling_detected": boolean,
+  "icing_detected": boolean,
+  "soiling_loss_pct": number,
+  "icing_loss_pct": number,
+  "affected_assets": [{ "asset_id": string, "loss_pct": number, "evidence": string }],
+  "weather_signature": string,
+  "recommended_action": string,
+  "confidence_pct": number,
+  "summary": string
+}`;
+  const usr = `Site: ${site}\nObservations:\n${JSON.stringify(observations, null, 2)}`;
+  const r = await callOpenRouter(sys, usr);
+  return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', affected_assets: [] });
+}
+
+async function hybridStorageCoOptimize(site, context = {}) {
+  const sys = `${SYSTEM_PROMPT} Co-optimize hybrid wind/solar + battery storage dispatch for revenue and grid services. Return strict JSON:
+{
+  "site": string,
+  "horizon_hours": number,
+  "dispatch": [{ "hour_offset": number, "renewable_mw": number, "battery_mw": number, "soc_pct": number, "market_target": "energy"|"reg_up"|"reg_down"|"capacity"|"arbitrage", "lmp_usd_per_mwh": number, "revenue_usd": number }],
+  "battery_cycles": number,
+  "total_revenue_usd": number,
+  "vs_renewable_only_uplift_usd": number,
+  "constraints_respected": [string],
+  "summary": string
+}`;
+  const usr = `Site: ${site}\nContext:\n${JSON.stringify(context, null, 2)}`;
+  const r = await callOpenRouter(sys, usr);
+  return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', dispatch: [] });
+}
+
+async function droneBladeInspection(turbineId, imageRefs = {}) {
+  const sys = `${SYSTEM_PROMPT} AI summary endpoint for a drone blade-inspection pipeline run. Input is a list of image references / metadata (filenames, blade IDs, GPS, altitude) — NOT actual image bytes. Produce a defect summary AS IF the imagery pipeline has run upstream. Return strict JSON:
+{
+  "turbine_id": string,
+  "image_count": number,
+  "blades_scanned": number,
+  "defects": [{ "blade": string, "image_ref": string, "defect_type": "LE_erosion"|"crack"|"lightning_strike"|"delamination"|"contamination"|"other", "severity": "low"|"medium"|"high"|"critical", "estimated_size_mm": number, "location_pct_radius": number, "confidence_pct": number }],
+  "overall_condition": "good"|"fair"|"poor"|"critical",
+  "pipeline_notes": string,
+  "summary": string
+}`;
+  const usr = `Turbine: ${turbineId}\nImage refs / pipeline payload:\n${JSON.stringify(imageRefs, null, 2)}`;
+  const r = await callOpenRouter(sys, usr);
+  return safeJsonParse(r, { summary: typeof r === 'string' ? r : 'No response', defects: [] });
+}
+
 module.exports = {
   callOpenRouter,
   safeJsonParse,
@@ -416,4 +525,10 @@ module.exports = {
   vendorWarrantyClaim,
   assetDegTrend,
   rootCauseAnalyzer,
+  intradayForecast,
+  ticketPrioritizer,
+  ppaShortfallNarrator,
+  soilingIcingDetector,
+  hybridStorageCoOptimize,
+  droneBladeInspection,
 };

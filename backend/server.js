@@ -90,6 +90,15 @@ app.use('/api/dashboard', require('./routes/dashboard'));
 
 // Custom domain views (turbine map + 24h generation curve)
 app.use('/api/custom-views', require('./routes/customViews'));
+app.use('/api/dispatch-confidence', require('./routes/dispatchConfidence'));
+
+// ─────────────────────────────────────────────
+// Pass 7 — full backlog mounts (SCADA ingest, WO state machine, ISO/RTO bids 503-stub)
+// Mounted before app.listen so 404s for these paths never occur.
+// ─────────────────────────────────────────────
+app.use('/api/scada-events',    require('./routes/scadaEvents'));
+app.use('/api/work-order-fsm',  require('./routes/workOrderStateMachine'));
+app.use('/api/iso-bids',        require('./routes/isoBids'));
 
 app.listen(PORT, () => {
   console.log(`\nAI Wind Solar Farm Ops API running on http://localhost:${PORT}\n`);

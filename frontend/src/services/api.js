@@ -119,6 +119,7 @@ export const weatherForecastsApi  = crud('weather-forecasts');
 export const energyMetersApi      = crud('energy-meters');
 export const techniciansApi       = crud('technicians');
 export const sparePartsApi        = crud('spare-parts');
+export const dispatchConfidenceScore = (body) => request('/dispatch-confidence/score', { method: 'POST', body: JSON.stringify(body || {}) });
 export const safetyIncidentsApi   = crud('safety-incidents');
 export const performanceKpisApi   = crud('performance-kpis');
 export const auditLogApi          = crud('audit-log');
@@ -148,6 +149,44 @@ export const aiTurbineAvailability    = (body) => request('/ai/turbine-availabil
 export const aiVendorWarrantyClaim    = (body) => request('/ai/vendor-warranty-claim',    { method: 'POST', body: JSON.stringify(body || {}) });
 export const aiAssetDegTrend          = (body) => request('/ai/asset-deg-trend',          { method: 'POST', body: JSON.stringify(body || {}) });
 export const aiRootCauseAnalyzer      = (body) => request('/ai/root-cause-analyzer',      { method: 'POST', body: JSON.stringify(body || {}) });
+
+// Pass 7 — full backlog AI verbs (6)
+export const aiIntradayForecast       = (body) => request('/ai/intraday-forecast',        { method: 'POST', body: JSON.stringify(body || {}) });
+export const aiTicketPrioritizer      = (body) => request('/ai/ticket-prioritizer',       { method: 'POST', body: JSON.stringify(body || {}) });
+export const aiPpaShortfallNarrator   = (body) => request('/ai/ppa-shortfall-narrator',   { method: 'POST', body: JSON.stringify(body || {}) });
+export const aiSoilingIcingDetect     = (body) => request('/ai/soiling-icing-detect',     { method: 'POST', body: JSON.stringify(body || {}) });
+export const aiHybridStorageCoOpt     = (body) => request('/ai/hybrid-storage-co-opt',    { method: 'POST', body: JSON.stringify(body || {}) });
+export const aiDroneBladeInspection   = (body) => request('/ai/drone-blade-inspection',   { method: 'POST', body: JSON.stringify(body || {}) });
+
+// Pass 7 — SCADA event ingest
+export const scadaEventsApi = {
+  list:   (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return request(`/scada-events${qs ? '?' + qs : ''}`);
+  },
+  get:    (id)         => request(`/scada-events/${id}`),
+  schema: ()           => request('/scada-events/schema'),
+  ingest: (event)      => request('/scada-events',      { method: 'POST', body: JSON.stringify(event) }),
+  bulk:   (events)     => request('/scada-events/bulk', { method: 'POST', body: JSON.stringify({ events }) }),
+};
+
+// Pass 7 — Work order state machine
+export const workOrderFsmApi = {
+  states:     ()                      => request('/work-order-fsm/states'),
+  history:    (wo_id)                 => request(`/work-order-fsm/${wo_id}/history`),
+  transition: (wo_id, to, reason='', meta={}) =>
+    request(`/work-order-fsm/${wo_id}/transition`, { method: 'POST', body: JSON.stringify({ to, reason, meta }) }),
+};
+
+// Pass 7 — ISO/RTO bid submissions (real submission gated 503)
+export const isoBidsApi = {
+  list:     ()      => request('/iso-bids'),
+  get:      (id)    => request(`/iso-bids/${id}`),
+  create:   (d)     => request('/iso-bids', { method: 'POST', body: JSON.stringify(d) }),
+  submit:   (id)    => request(`/iso-bids/${id}/submit`,   { method: 'POST' }),
+  withdraw: (id)    => request(`/iso-bids/${id}/withdraw`, { method: 'POST' }),
+  supportedIsos: () => request('/iso-bids/_meta/supported-isos'),
+};
 
 // AI history
 export const getAIHistory = (feature, limit = 25) => {

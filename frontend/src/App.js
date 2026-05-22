@@ -42,6 +42,20 @@ import AIVendorWarrantyPage      from './pages/AIVendorWarrantyPage';
 import AIAssetDegTrendPage       from './pages/AIAssetDegTrendPage';
 import AIRootCausePage           from './pages/AIRootCausePage';
 
+// Pass 7 — full backlog AI pages (6)
+import AIIntradayForecastPage     from './pages/AIIntradayForecastPage';
+import AITicketPrioritizerPage    from './pages/AITicketPrioritizerPage';
+import AIPpaShortfallPage         from './pages/AIPpaShortfallPage';
+import AISoilingIcingPage         from './pages/AISoilingIcingPage';
+import AIHybridStoragePage        from './pages/AIHybridStoragePage';
+import AIDroneBladeInspectionPage from './pages/AIDroneBladeInspectionPage';
+import AIDispatchConfidencePage   from './pages/AIDispatchConfidencePage';
+
+// Pass 7 — full backlog non-AI pages (3)
+import ScadaEventsPage            from './pages/ScadaEventsPage';
+import WorkOrderStateMachinePage  from './pages/WorkOrderStateMachinePage';
+import IsoBidsPage                from './pages/IsoBidsPage';
+
 // Admin
 import WebhooksPage from './pages/WebhooksPage';
 
@@ -52,6 +66,9 @@ import LoginPage from './pages/LoginPage';
 import { getToken } from './services/api';
 
 import './App.css';
+
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
 
 function RequireAuth({ children }) {
   const location = useLocation();
@@ -69,6 +86,9 @@ function ShellRoutes() {
         <Topbar />
         <div style={{ padding: '24px 32px' }}>
           <Routes>
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
             <Route path="/" element={<Dashboard />} />
 
             <Route path="/turbines"           element={<TurbinesPage />} />
@@ -106,6 +126,20 @@ function ShellRoutes() {
             <Route path="/ai/vendor-warranty-claim"   element={<AIVendorWarrantyPage />} />
             <Route path="/ai/asset-deg-trend"         element={<AIAssetDegTrendPage />} />
             <Route path="/ai/root-cause-analyzer"     element={<AIRootCausePage />} />
+
+            {/* Pass 7 — full backlog AI routes (6) */}
+            <Route path="/ai/intraday-forecast"       element={<AIIntradayForecastPage />} />
+            <Route path="/ai/ticket-prioritizer"      element={<AITicketPrioritizerPage />} />
+            <Route path="/ai/ppa-shortfall-narrator"  element={<AIPpaShortfallPage />} />
+            <Route path="/ai/soiling-icing-detect"    element={<AISoilingIcingPage />} />
+            <Route path="/ai/hybrid-storage-co-opt"   element={<AIHybridStoragePage />} />
+            <Route path="/ai/drone-blade-inspection"  element={<AIDroneBladeInspectionPage />} />
+            <Route path="/ai/dispatch-confidence"     element={<AIDispatchConfidencePage />} />
+
+            {/* Pass 7 — full backlog non-AI routes (3) */}
+            <Route path="/scada-events"               element={<ScadaEventsPage />} />
+            <Route path="/work-order-fsm"             element={<WorkOrderStateMachinePage />} />
+            <Route path="/iso-bids"                   element={<IsoBidsPage />} />
 
             <Route path="/webhooks" element={<WebhooksPage />} />
             <Route path="/custom-views" element={<CustomViewsPage />} />
