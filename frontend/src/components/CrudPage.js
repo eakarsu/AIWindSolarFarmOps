@@ -386,7 +386,7 @@ export default function CrudPage({ title, subtitle, api, fields, statusKey, allo
                         </span>
                       </span>
                       <a
-                        href={`${process.env.REACT_APP_API_BASE || 'http://localhost:3063/api'}/attachments/${a.id}/download`}
+                        href={`${process.env.REACT_APP_API_URL || '/api'}/attachments/${a.id}/download`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn secondary"

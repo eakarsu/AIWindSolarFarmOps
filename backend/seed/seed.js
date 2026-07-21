@@ -1,15 +1,19 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('node:crypto');
 const { Pool } = require('pg');
 require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'wind_solar_ops',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-});
+if (process.env.NODE_ENV === 'production' || process.env.ALLOW_DEMO_SEED !== 'true') {
+  throw new Error('Demo seed is disabled; set ALLOW_DEMO_SEED=true only for an isolated non-production database.');
+}
+const demoPassword = String(process.env.DEMO_PASSWORD || '');
+if (demoPassword.length < 12) throw new Error('DEMO_PASSWORD must contain at least 12 characters.');
+const demoSalt = crypto.randomBytes(16);
+const demoPasswordHash = `scrypt$${demoSalt.toString('hex')}$${crypto.scryptSync(demoPassword, demoSalt, 32).toString('hex')}`;
+
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required.');
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function run() {
   const client = await pool.connect();
@@ -518,9 +522,9 @@ async function run() {
     // ── users ────────────────────────────────────────────────
     console.log('[seed] inserting users...');
     const users = [
-      ['admin@windsolar.io',  'admin123',  'Admin',  'admin'],
-      ['ops@windsolar.io',    'ops123',    'Ops',    'ops'],
-      ['viewer@windsolar.io', 'viewer123', 'Viewer', 'viewer'],
+      ['admin@windsolar.io',  demoPasswordHash, 'Admin',  'admin'],
+      ['ops@windsolar.io',    demoPasswordHash, 'Ops',    'ops'],
+      ['viewer@windsolar.io', demoPasswordHash, 'Viewer', 'viewer'],
     ];
     for (const u of users) {
       await client.query(
