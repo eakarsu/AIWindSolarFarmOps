@@ -1,38 +1,16 @@
-// AI helper service for AIWindSolarFarmOps
-// Reads OPENROUTER_API_KEY and OPENROUTER_MODEL from:
-//   1. this project's .env (already loaded by server.js)
-//   2. fallback: /Users/erolakarsu/projects/beauty-wellness-ai/.env (canonical source)
-// Never overwrites or wipes credentials.
+// Strict OpenRouter helper for AIWindSolarFarmOps. Runtime credentials are
+// accepted only from this process environment, which server.js loads from the
+// project's ignored .env file.
+const https = require('node:https');
 
-const fs = require('fs');
-
-const FALLBACK_ENV = '/Users/erolakarsu/projects/beauty-wellness-ai/.env';
-
-function readFallbackEnv() {
-  try {
-    if (!fs.existsSync(FALLBACK_ENV)) return {};
-    const raw = fs.readFileSync(FALLBACK_ENV, 'utf8');
-    const out = {};
-    for (const line of raw.split('\n')) {
-      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-      if (!m) continue;
-      let val = m[2];
-      if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
-      if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
-      out[m[1]] = val;
-    }
-    return out;
-  } catch (e) {
-    console.warn('[ai] fallback env read failed:', e.message);
-    return {};
-  }
-}
-
-function getOpenRouterCreds() {
-  const fb = readFallbackEnv();
-  const key = process.env.OPENROUTER_API_KEY || fb.OPENROUTER_API_KEY || '';
-  const model = process.env.OPENROUTER_MODEL || fb.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5';
-  return { key, model };
+function getOpenRouterConfig() {
+  const key = String(process.env.OPENROUTER_API_KEY || '').trim();
+  const model = String(process.env.OPENROUTER_MODEL || '').trim();
+  const baseUrl = String(process.env.OPENROUTER_BASE_URL || '').replace(/\/+$/, '');
+  if (!key) throw new Error('OPENROUTER_API_KEY is not configured');
+  if (!model) throw new Error('OPENROUTER_MODEL is not configured');
+  if (baseUrl !== 'https://openrouter.ai/api/v1') throw new Error('OPENROUTER_BASE_URL must be https://openrouter.ai/api/v1');
+  return { key, model, endpoint: new URL(`${baseUrl}/chat/completions`) };
 }
 
 const SYSTEM_PROMPT =
@@ -42,12 +20,10 @@ const SYSTEM_PROMPT =
   'Always return STRICT JSON in the exact schema requested — no markdown, no fenced blocks, no prose outside JSON.';
 
 function callOpenRouter(systemPrompt, userPrompt) {
-  return new Promise((resolve) => {
-    const { key, model } = getOpenRouterCreds();
-    if (!key) {
-      return resolve({ error: 'OPENROUTER_API_KEY not configured' });
-    }
-    const https = require('https');
+  return new Promise((resolve, reject) => {
+    let config;
+    try { config = getOpenRouterConfig(); } catch (error) { reject(error); return; }
+    const { key, model, endpoint } = config;
     const payload = JSON.stringify({
       model,
       messages: [
@@ -59,8 +35,9 @@ function callOpenRouter(systemPrompt, userPrompt) {
     });
 
     const options = {
-      hostname: 'openrouter.ai',
-      path: '/api/v1/chat/completions',
+      protocol: endpoint.protocol,
+      hostname: endpoint.hostname,
+      path: endpoint.pathname,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -76,18 +53,24 @@ function callOpenRouter(systemPrompt, userPrompt) {
       res.on('data', (chunk) => (body += chunk));
       res.on('end', () => {
         try {
+          if (res.statusCode < 200 || res.statusCode >= 300) {
+            reject(new Error(`OpenRouter API error (${res.statusCode})`));
+            return;
+          }
           const parsed = JSON.parse(body);
           if (parsed.error) {
-            return resolve({ error: parsed.error.message || 'OpenRouter error', raw: body });
+            reject(new Error(parsed.error.message || 'OpenRouter error'));
+            return;
           }
-          const content = parsed.choices?.[0]?.message?.content || '';
+          const content = String(parsed.choices?.[0]?.message?.content || '').trim();
+          if (!content) throw new Error('OpenRouter returned an empty response');
           resolve(content);
         } catch (e) {
-          resolve({ error: 'AI response parse failed', raw: body });
+          reject(e);
         }
       });
     });
-    req.on('error', (e) => resolve({ error: e.message }));
+    req.on('error', reject);
     req.write(payload);
     req.end();
   });

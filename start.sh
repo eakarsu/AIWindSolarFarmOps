@@ -5,6 +5,26 @@ project_dir="$(cd "$(dirname "$0")" && pwd)"
 if [[ "${NODE_ENV:-}" == "test" && -n "${RUNTIME_PROJECT_SOURCE:-}" && -d "${RUNTIME_PROJECT_SOURCE:-}" ]]; then
   project_dir="$(cd "$RUNTIME_PROJECT_SOURCE" && pwd)"
 fi
+
+load_env_file() {
+  local env_file="$project_dir/.env"
+  local key value
+  [[ -f "$env_file" ]] || { echo "Missing $env_file" >&2; exit 1; }
+  while IFS='=' read -r key value; do
+    key="${key#export }"
+    [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+    [[ -z "${!key+x}" ]] || continue
+    value="${value%$'\r'}"
+    if [[ "$value" == \"*\" && "$value" == *\" ]]; then
+      value="${value:1:${#value}-2}"
+    elif [[ "$value" == \'*\' && "$value" == *\' ]]; then
+      value="${value:1:${#value}-2}"
+    fi
+    export "$key=$value"
+  done < "$env_file"
+}
+
+load_env_file
 : "${BACKEND_PORT:?BACKEND_PORT is required}"
 : "${FRONTEND_PORT:?FRONTEND_PORT is required}"
 : "${DATABASE_URL:?DATABASE_URL is required}"
@@ -20,6 +40,9 @@ else
   : "${allowed_origins:?ALLOWED_ORIGINS or CORS_ORIGINS is required outside test mode}"
   export ALLOWED_ORIGINS="$allowed_origins" CORS_ORIGINS="$allowed_origins"
 fi
+if [[ "${NODE_ENV:-development}" != "production" ]]; then
+  export ENABLE_LEGACY_PROVIDER_ROUTES=true
+fi
 for dependency_dir in "$project_dir/backend/node_modules" "$project_dir/frontend/node_modules"; do
   [[ -d "$dependency_dir" ]] || { echo "Missing $dependency_dir; install dependencies explicitly before starting." >&2; exit 1; }
 done
@@ -30,9 +53,12 @@ for assigned_port in "$BACKEND_PORT" "$FRONTEND_PORT"; do
   fi
 done
 
-(cd "$project_dir/backend" && exec env BACKEND_PORT="$BACKEND_PORT" ALLOWED_ORIGINS="$ALLOWED_ORIGINS" CORS_ORIGINS="$CORS_ORIGINS" npm start) &
+(cd "$project_dir/backend" && exec node scripts/migrate-runtime.js)
+(cd "$project_dir/backend" && exec node scripts/create-admin.js)
+
+(cd "$project_dir/backend" && exec env BACKEND_PORT="$BACKEND_PORT" ALLOWED_ORIGINS="$ALLOWED_ORIGINS" CORS_ORIGINS="$CORS_ORIGINS" node server.js) &
 backend_pid=$!
-(cd "$project_dir/frontend" && exec env PORT="$FRONTEND_PORT" REACT_APP_API_URL="http://127.0.0.1:$BACKEND_PORT/api" BROWSER=none npm start) &
+(cd "$project_dir/frontend" && exec env PORT="$FRONTEND_PORT" REACT_APP_API_URL="http://127.0.0.1:$BACKEND_PORT/api" BROWSER=none ./node_modules/.bin/react-scripts start) &
 frontend_pid=$!
 
 cleanup() {

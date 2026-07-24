@@ -19,16 +19,16 @@ async function main() {
   if (!email || !name || password.length < 12) {
     throw new Error('Admin email, name, and a 12+ character password are required.');
   }
-  const existing = await pool.query('SELECT id FROM users WHERE lower(email) = $1 LIMIT 1', [email]);
-  if (existing.rows.length) {
-    console.log('Initial admin already exists; credentials were not changed.');
-    return;
-  }
   await pool.query(
-    `INSERT INTO users(email, password, name, role) VALUES($1, $2, $3, 'admin')`,
+    `INSERT INTO users(email, password, name, role) VALUES($1, $2, $3, 'admin')
+     ON CONFLICT(email) DO UPDATE SET
+       password=EXCLUDED.password,
+       name=EXCLUDED.name,
+       role='admin',
+       updated_at=NOW()`,
     [email, hashPassword(password), name]
   );
-  console.log('Initial wind/solar administrator created.');
+  console.log('Wind/solar administrator provisioned.');
 }
 
 main().catch((error) => { console.error(error.message); process.exitCode = 1; }).finally(() => pool.end());
