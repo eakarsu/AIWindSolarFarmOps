@@ -1,3 +1,4 @@
+import ReadableAIReport from "./AIResultView";
 import React, { useMemo } from 'react';
 
 // ────────────────────────────────────────────────
@@ -415,7 +416,7 @@ export default function AIResultDisplay({ result, loading, error, feature, title
         )}
 
         {raw && !summary && (
-          <pre className="ai-raw">{String(raw).slice(0, 1500)}</pre>
+          <ReadableAIReport result={raw} />
         )}
       </div>
 

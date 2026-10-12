@@ -12,7 +12,7 @@ export default function AITicketPrioritizerPage() {
         { key: 'context', label: 'Prioritization Context', type: 'textarea',
           placeholder: 'e.g. ERCOT LMP > $120/MWh forecast — bias revenue.' },
       ]}
-      run={(v) => aiTicketPrioritizer({ context: v.context })}
+      run={(v, requestOptions) => aiTicketPrioritizer({ context: v.context }, requestOptions)}
     />
   );
 }

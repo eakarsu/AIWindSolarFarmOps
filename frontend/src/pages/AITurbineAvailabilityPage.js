@@ -12,7 +12,7 @@ export default function AITurbineAvailabilityPage() {
         { key: 'window', label: 'Window', placeholder: 'e.g. last 30 days, YTD 2025' },
         { key: 'notes',  label: 'Notes / Segmentation', type: 'textarea' },
       ]}
-      run={(v) => aiTurbineAvailability({ window: v.window, notes: v.notes })}
+      run={(v, requestOptions) => aiTurbineAvailability({ window: v.window, notes: v.notes }, requestOptions)}
     />
   );
 }

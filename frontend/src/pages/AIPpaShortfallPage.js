@@ -13,7 +13,7 @@ export default function AIPpaShortfallPage() {
         { key: 'period', label: 'Period',     placeholder: 'e.g. 2025-05 or 2025-Q2' },
         { key: 'notes',  label: 'Shortfall Context', type: 'textarea' },
       ]}
-      run={(v) => aiPpaShortfallNarrator({ ppa_id: v.ppa_id, period: v.period, notes: v.notes })}
+      run={(v, requestOptions) => aiPpaShortfallNarrator({ ppa_id: v.ppa_id, period: v.period, notes: v.notes }, requestOptions)}
     />
   );
 }

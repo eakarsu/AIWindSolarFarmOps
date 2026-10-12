@@ -13,11 +13,11 @@ export default function AIDroneBladeInspectionPage() {
         { key: 'image_count', label: 'Image Count', type: 'number', defaultValue: 36 },
         { key: 'notes',       label: 'Flight / Pipeline Notes', type: 'textarea' },
       ]}
-      run={(v) => aiDroneBladeInspection({
+      run={(v, requestOptions) => aiDroneBladeInspection({
         turbine_id: v.turbine_id,
         image_count: v.image_count,
         notes: v.notes,
-      })}
+      }, requestOptions)}
     />
   );
 }

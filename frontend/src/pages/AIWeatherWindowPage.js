@@ -13,7 +13,7 @@ export default function AIWeatherWindowPage() {
         { key: 'activity', label: 'Activity',           placeholder: 'e.g. Crane lift, blade rope-access, IV-curve testing' },
         { key: 'notes',    label: 'Constraints / Limits', type: 'textarea' },
       ]}
-      run={(v) => aiWeatherWindow({ site: v.site, activity: v.activity, notes: v.notes })}
+      run={(v, requestOptions) => aiWeatherWindow({ site: v.site, activity: v.activity, notes: v.notes }, requestOptions)}
     />
   );
 }

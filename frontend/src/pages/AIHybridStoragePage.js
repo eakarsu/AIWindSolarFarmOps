@@ -12,7 +12,7 @@ export default function AIHybridStoragePage() {
         { key: 'site',  label: 'Hybrid Site', placeholder: 'e.g. Roscoe Hybrid Site, TX' },
         { key: 'notes', label: 'Market / Battery / PPA Context', type: 'textarea' },
       ]}
-      run={(v) => aiHybridStorageCoOpt({ site: v.site, notes: v.notes })}
+      run={(v, requestOptions) => aiHybridStorageCoOpt({ site: v.site, notes: v.notes }, requestOptions)}
     />
   );
 }

@@ -13,7 +13,7 @@ export default function AIAssetDegTrendPage() {
         { key: 'metric',   label: 'Metric',   placeholder: 'e.g. soiling-loss-pct, pmax-degradation-pct-per-year' },
         { key: 'notes',    label: 'History / Context', type: 'textarea' },
       ]}
-      run={(v) => aiAssetDegTrend({ asset_id: v.asset_id, metric: v.metric, notes: v.notes })}
+      run={(v, requestOptions) => aiAssetDegTrend({ asset_id: v.asset_id, metric: v.metric, notes: v.notes }, requestOptions)}
     />
   );
 }

@@ -12,7 +12,7 @@ export default function AIScheduleMaintenancePage() {
         { key: 'window', label: 'Planning Window', placeholder: 'e.g. next 7 days' },
         { key: 'notes',  label: 'Constraints / Notes', type: 'textarea' },
       ]}
-      run={(v) => aiScheduleMaintenance({ window: v.window, notes: v.notes })}
+      run={(v, requestOptions) => aiScheduleMaintenance({ window: v.window, notes: v.notes }, requestOptions)}
     />
   );
 }

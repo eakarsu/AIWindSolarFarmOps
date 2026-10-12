@@ -13,7 +13,7 @@ export default function AIForecastGenerationPage() {
         { key: 'horizon_hours', label: 'Horizon (hrs)', type: 'number', defaultValue: 24 },
         { key: 'notes',         label: 'Weather / Operational Notes', type: 'textarea' },
       ]}
-      run={(v) => aiForecastGeneration({ site: v.site, horizon_hours: v.horizon_hours, notes: v.notes })}
+      run={(v, requestOptions) => aiForecastGeneration({ site: v.site, horizon_hours: v.horizon_hours, notes: v.notes }, requestOptions)}
     />
   );
 }

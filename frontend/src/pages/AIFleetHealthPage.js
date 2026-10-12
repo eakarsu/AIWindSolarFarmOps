@@ -9,7 +9,7 @@ export default function AIFleetHealthPage() {
       feature="fleet-health"
       subtitle="Score the wind + solar fleet and call out worst-offender assets."
       inputs={[]}
-      run={() => aiFleetHealth({})}
+      run={(_values, requestOptions) => aiFleetHealth({}, requestOptions)}
       buttonLabel="Run Fleet Analysis"
     />
   );

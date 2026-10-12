@@ -11,7 +11,7 @@ export default function AIInverterClippingPage() {
       inputs={[
         { key: 'context', label: 'Context / Conditions', type: 'textarea' },
       ]}
-      run={(v) => aiInverterClippingDetect({ context: v.context })}
+      run={(v, requestOptions) => aiInverterClippingDetect({ context: v.context }, requestOptions)}
     />
   );
 }

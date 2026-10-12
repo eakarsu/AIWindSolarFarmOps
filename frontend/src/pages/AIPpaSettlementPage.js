@@ -13,7 +13,7 @@ export default function AIPpaSettlementPage() {
         { key: 'period', label: 'Period',  placeholder: 'e.g. 2025-Q2 or 2025-05' },
         { key: 'notes',  label: 'Delivery / Curtailment Notes', type: 'textarea' },
       ]}
-      run={(v) => aiPpaSettlement({ ppa_id: v.ppa_id, period: v.period, notes: v.notes })}
+      run={(v, requestOptions) => aiPpaSettlement({ ppa_id: v.ppa_id, period: v.period, notes: v.notes }, requestOptions)}
       buttonLabel="Compute Settlement"
     />
   );

@@ -12,7 +12,7 @@ export default function AICurtailmentOptimizePage() {
         { key: 'site',  label: 'Site' },
         { key: 'notes', label: 'Grid / Market / PPA Notes', type: 'textarea' },
       ]}
-      run={(v) => aiCurtailmentOptimize({ site: v.site, notes: v.notes })}
+      run={(v, requestOptions) => aiCurtailmentOptimize({ site: v.site, notes: v.notes }, requestOptions)}
     />
   );
 }

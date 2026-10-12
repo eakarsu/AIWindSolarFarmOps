@@ -12,7 +12,7 @@ export default function AIFaultPrognosticPage() {
         { key: 'asset_id',     label: 'Asset ID',     placeholder: 'e.g. WTG-IA-014 or INV-CA-105' },
         { key: 'sensor_notes', label: 'Sensor Notes', type: 'textarea', placeholder: 'Vibration, oil, temperature, DGA trends, etc.' },
       ]}
-      run={(v) => aiFaultPrognostic({ asset_id: v.asset_id, sensor_notes: v.sensor_notes })}
+      run={(v, requestOptions) => aiFaultPrognostic({ asset_id: v.asset_id, sensor_notes: v.sensor_notes }, requestOptions)}
     />
   );
 }

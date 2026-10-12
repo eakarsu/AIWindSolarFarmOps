@@ -12,7 +12,7 @@ export default function AIDraftWorkOrderPage() {
         { key: 'intent',   label: 'Intent',   type: 'textarea', placeholder: 'e.g. Replace pitch motor #2 on WTG-TX-027 due to recurring P0312 faults.' },
         { key: 'asset_id', label: 'Asset ID', placeholder: 'e.g. WTG-TX-027' },
       ]}
-      run={(v) => aiDraftWorkOrder({ intent: v.intent, asset_id: v.asset_id })}
+      run={(v, requestOptions) => aiDraftWorkOrder({ intent: v.intent, asset_id: v.asset_id }, requestOptions)}
       buttonLabel="Draft Work Order"
     />
   );

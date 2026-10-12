@@ -11,7 +11,7 @@ export default function AIExecutiveBriefPage() {
       inputs={[
         { key: 'notes', label: 'Optional bias notes', type: 'textarea', placeholder: 'e.g. focus on wind fleet availability and PPA settlement risk.' },
       ]}
-      run={(v) => aiExecutiveBrief({ notes: v.notes })}
+      run={(v, requestOptions) => aiExecutiveBrief({ notes: v.notes }, requestOptions)}
       buttonLabel="Generate Brief"
     />
   );

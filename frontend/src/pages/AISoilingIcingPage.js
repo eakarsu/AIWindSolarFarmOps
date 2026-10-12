@@ -12,7 +12,7 @@ export default function AISoilingIcingPage() {
         { key: 'site',  label: 'Site',  placeholder: 'e.g. Topaz Solar Farm, CA' },
         { key: 'notes', label: 'Production / Weather Observations', type: 'textarea' },
       ]}
-      run={(v) => aiSoilingIcingDetect({ site: v.site, notes: v.notes })}
+      run={(v, requestOptions) => aiSoilingIcingDetect({ site: v.site, notes: v.notes }, requestOptions)}
     />
   );
 }

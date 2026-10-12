@@ -12,7 +12,7 @@ export default function AIRootCausePage() {
         { key: 'incident', label: 'Incident', type: 'textarea', placeholder: 'e.g. WTG-IA-014 unplanned shutdown 14 hours on 2025-05-12' },
         { key: 'notes',    label: 'Evidence / Context', type: 'textarea' },
       ]}
-      run={(v) => aiRootCauseAnalyzer({ incident: v.incident, notes: v.notes })}
+      run={(v, requestOptions) => aiRootCauseAnalyzer({ incident: v.incident, notes: v.notes }, requestOptions)}
       buttonLabel="Run RCA"
     />
   );

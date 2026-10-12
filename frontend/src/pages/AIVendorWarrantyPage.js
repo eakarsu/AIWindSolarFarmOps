@@ -13,7 +13,7 @@ export default function AIVendorWarrantyPage() {
         { key: 'vendor',   label: 'Vendor' },
         { key: 'notes',    label: 'Fault / Evidence Notes', type: 'textarea' },
       ]}
-      run={(v) => aiVendorWarrantyClaim({ asset_id: v.asset_id, vendor: v.vendor, notes: v.notes })}
+      run={(v, requestOptions) => aiVendorWarrantyClaim({ asset_id: v.asset_id, vendor: v.vendor, notes: v.notes }, requestOptions)}
       buttonLabel="Draft Claim"
     />
   );

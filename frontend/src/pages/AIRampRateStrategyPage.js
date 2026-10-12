@@ -12,7 +12,7 @@ export default function AIRampRateStrategyPage() {
         { key: 'site',  label: 'Site' },
         { key: 'notes', label: 'Grid / Market Rules', type: 'textarea' },
       ]}
-      run={(v) => aiRampRateStrategy({ site: v.site, notes: v.notes })}
+      run={(v, requestOptions) => aiRampRateStrategy({ site: v.site, notes: v.notes }, requestOptions)}
     />
   );
 }

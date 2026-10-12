@@ -13,7 +13,7 @@ export default function AIIntradayForecastPage() {
         { key: 'horizon_hours', label: 'Horizon (hrs)', type: 'number', defaultValue: 6 },
         { key: 'notes',         label: 'Nowcast / Ramp Context', type: 'textarea' },
       ]}
-      run={(v) => aiIntradayForecast({ site: v.site, horizon_hours: v.horizon_hours, notes: v.notes })}
+      run={(v, requestOptions) => aiIntradayForecast({ site: v.site, horizon_hours: v.horizon_hours, notes: v.notes }, requestOptions)}
     />
   );
 }
