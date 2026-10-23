@@ -63,6 +63,7 @@ import WebhooksPage from './pages/WebhooksPage';
 import CustomViewsPage from './pages/CustomViewsPage';
 
 import LoginPage from './pages/LoginPage';
+import TasksFeaturePackPage from './pages/TasksFeaturePackPage';
 import { getToken } from './services/api';
 
 import './App.css';
@@ -98,6 +99,7 @@ function ShellRoutes() {
             <Route path="/met-masts"          element={<MetMastsPage />} />
             <Route path="/ppa-contracts"      element={<PpaContractsPage />} />
             <Route path="/work-orders"        element={<WorkOrdersPage />} />
+            <Route path="/tasks" element={<TasksFeaturePackPage />} />
             <Route path="/maintenance-logs"   element={<MaintenanceLogsPage />} />
             <Route path="/sensor-streams"     element={<SensorStreamsPage />} />
             <Route path="/faults"             element={<FaultsPage />} />

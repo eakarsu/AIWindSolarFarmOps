@@ -29,6 +29,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/governance', require('./governance/router'));
 
 app.use('/api', authenticateToken);
+app.use('/api', require('./routes/featurePack'));
 const protectedRoutes = [
   ['/api/turbines','./routes/turbines'],['/api/inverters','./routes/inverters'],
   ['/api/panels','./routes/panels'],['/api/transformers','./routes/transformers'],

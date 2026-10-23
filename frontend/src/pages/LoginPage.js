@@ -11,12 +11,11 @@ export default function LoginPage() {
   const demoAvailable = process.env.REACT_APP_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true'
     && Boolean(process.env.REACT_APP_DEMO_EMAIL && process.env.REACT_APP_DEMO_PASSWORD);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const submitLogin = async (loginEmail, loginPassword) => {
     setError(null);
     setLoading(true);
     try {
-      const { token, user } = await login(email, password);
+      const { token, user } = await login(loginEmail, loginPassword);
       setToken(token);
       setStoredUser(user);
       navigate('/', { replace: true });
@@ -25,6 +24,19 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await submitLogin(email, password);
+  };
+
+  const handleDemoLogin = async () => {
+    const demoEmail = process.env.REACT_APP_DEMO_EMAIL || '';
+    const demoPassword = process.env.REACT_APP_DEMO_PASSWORD || '';
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    await submitLogin(demoEmail, demoPassword);
   };
 
   return (
@@ -58,7 +70,7 @@ export default function LoginPage() {
 
         <button
           type="button"
-          onClick={() => { setEmail(process.env.REACT_APP_DEMO_EMAIL); setPassword(process.env.REACT_APP_DEMO_PASSWORD); setError(null); }}
+          onClick={handleDemoLogin}
           disabled={!demoAvailable || loading}
           aria-label="Fill demo credentials"
           style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}
